@@ -1,0 +1,87 @@
+spring:
+  application:
+    name: transaction-sync-service
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev}
+  
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+      connection-timeout: 30000
+  
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+        jdbc:
+          time_zone: UTC
+  
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+
+server:
+  port: 8084
+  error:
+    include-message: always
+    include-binding-errors: always
+  servlet:  
+    context-path: /api/v1
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: when-authorized
+
+transaction-sync:
+  scheduler:
+    transaction-sync:
+      cron: "0 30 23 * * ?"
+      timezone: "America/Los_Angeles"
+      enabled: true
+    retry-processor:
+      cron: "0 0 3 * * ?"
+      timezone: "America/Los_Angeles"
+      enabled: true
+    merchant-sync:
+      cron: "0 0 1 * * ?"
+      timezone: "America/Los_Angeles"
+      enabled: true
+  
+  processing:
+    batch-size: 5
+    batch-delay-seconds: 2
+    request-delay-seconds: 0.5
+    max-retries: 3
+    retry-delay-hours: 24
+  
+  privvy:
+    api-url: ${PRIVVY_API_URL:}
+    email: ${PRIVVY_EMAIL:}
+    password: ${PRIVVY_PASSWORD:}
+    token-cache-minutes: 50
+  
+  redfynn:
+    api-url: ${REDFYNN_API_URL:}
+    api-key: ${REDFYNN_API_KEY:}
+
+logging:
+  level:
+    com.transactionsync: INFO
+    org.springframework.web: INFO
+    org.springframework.boot: INFO
+    org.hibernate: WARN
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+
