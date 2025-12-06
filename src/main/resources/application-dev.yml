@@ -1,0 +1,24 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/transaction_sync_dev
+    username: postgres
+    password: postgres
+  
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: validate
+
+transaction-sync:
+  privvy:
+    api-url: "https://webserviceapi-prod.privvyoffice.com"
+    email: "robert.gartside@redfynn.com"
+    password: "Summer2025"
+
+logging:
+  level:
+    com.transactionsync: DEBUG
+    org.springframework.web: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+

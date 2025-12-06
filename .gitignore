@@ -23,8 +23,6 @@ bin/
 
 # Spring Boot
 application-local.yml
-application-dev.yml
-application-prod.yml
 
 # Logs
 *.log
