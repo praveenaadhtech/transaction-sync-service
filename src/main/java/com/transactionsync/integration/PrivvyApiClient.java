@@ -2,6 +2,7 @@ package com.transactionsync.integration;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.transactionsync.config.PrivvyCredentialsLoader;
 import com.transactionsync.dto.integration.PrivvyLoginResponseDTO;
 import com.transactionsync.dto.integration.PrivvyMerchantDTO;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,9 +34,9 @@ public class PrivvyApiClient {
             @Value("${transaction-sync.privvy.api-url:}") String apiUrl,
             @Value("${transaction-sync.privvy.email:}") String email,
             @Value("${transaction-sync.privvy.password:}") String password) {
-        this.apiUrl = apiUrl;
-        this.email = email;
-        this.password = password;
+        this.apiUrl = getValue(apiUrl, PrivvyCredentialsLoader.getApiUrl());
+        this.email = getValue(email, PrivvyCredentialsLoader.getEmail());
+        this.password = getValue(password, PrivvyCredentialsLoader.getPassword());
         this.restTemplate = new RestTemplate();
         
         ObjectMapper objectMapper = new ObjectMapper();
@@ -46,6 +47,13 @@ public class PrivvyApiClient {
         
         restTemplate.getMessageConverters().removeIf(c -> c instanceof MappingJackson2HttpMessageConverter);
         restTemplate.getMessageConverters().add(converter);
+    }
+
+    private String getValue(String configValue, String fileValue) {
+        if (configValue != null && !configValue.trim().isEmpty()) {
+            return configValue;
+        }
+        return fileValue != null ? fileValue : "";
     }
 
     private String getAuthToken() {

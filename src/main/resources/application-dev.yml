@@ -11,9 +11,9 @@ spring:
 
 transaction-sync:
   privvy:
-    api-url: "https://webserviceapi-prod.privvyoffice.com"
-    email: "robert.gartside@redfynn.com"
-    password: "Summer2025"
+    api-url: ${PRIVVY_API_URL:}
+    email: ${PRIVVY_EMAIL:}
+    password: ${PRIVVY_PASSWORD:}
 
 logging:
   level:
